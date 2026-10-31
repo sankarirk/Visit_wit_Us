@@ -1,4 +1,5 @@
 
+# Configure global project packages needed to execute continuous integrations on workflow runners
 pandas==2.2.3
 numpy==2.2.6
 scikit-learn==1.6.1
