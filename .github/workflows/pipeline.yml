@@ -15,7 +15,7 @@ jobs:
   # =====================================================
   # JOB 1: DATA REGISTRATION
   # =====================================================
-
+  # This job checks out code, sets up Python, registers the dataset, and uploads it as an artifact
   register-dataset:
     runs-on: ubuntu-latest
 
@@ -46,7 +46,7 @@ jobs:
   # =====================================================
   # JOB 2: DATA PREPARATION
   # =====================================================
-
+  # This job loads the dataset from the previous step, processes features, and saves split files
   data-prep:
     needs: register-dataset
     runs-on: ubuntu-latest
@@ -82,7 +82,7 @@ jobs:
   # =====================================================
   # JOB 3: MODEL TRAINING AND REGISTRATION
   # =====================================================
-
+  # This job trains the model, tracks experiments via MLflow, and commits the finalized model
   model-training:
     needs: data-prep
     runs-on: ubuntu-latest
