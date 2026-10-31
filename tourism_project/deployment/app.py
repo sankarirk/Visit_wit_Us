@@ -9,13 +9,14 @@ from pathlib import Path
 # ============================================================
 # 1. APPLICATION CONFIGURATION
 # ============================================================
-
+# Define custom page titles, icons, and wide layout settings to look professional
 st.set_page_config(
     page_title="Visit with Us - Package Prediction",
     page_icon="✈️",
     layout="wide"
 )
 
+# Configure relative pathways to locate static models, datasets, and metadata
 APP_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = APP_DIR.parent
 
@@ -26,7 +27,7 @@ DATA_PATH = PROJECT_DIR / "data" / "tourism.csv"
 # ============================================================
 # 2. LOAD TRAINED MODEL
 # ============================================================
-
+# Cache resources to prevent loading bottleneck lag on page refresh
 @st.cache_resource
 def load_model():
     if not MODEL_PATH.exists():
@@ -61,7 +62,7 @@ def load_metadata():
 # ============================================================
 # 3. APPLICATION HEADER
 # ============================================================
-
+# Draw clean app landing headings and informational body copy inside Streamlit container
 st.title("✈️ Visit with Us")
 st.subheader("Wellness Tourism Package Purchase Prediction")
 
@@ -83,7 +84,7 @@ st.divider()
 # ============================================================
 # 4. LOAD MODEL AND REFERENCE DATA
 # ============================================================
-
+# Safely execute load utilities inside global try-catch boundaries
 try:
     model = load_model()
     reference_df = load_reference_data()
@@ -99,7 +100,7 @@ except Exception as error:
 # ============================================================
 # 5. DEFINE INPUT FEATURE TYPES
 # ============================================================
-
+# Map exact categorical and numerical column indices mapped to models
 categorical_features = [
     "TypeofContact",
     "Occupation",
@@ -124,7 +125,7 @@ numeric_features = [
     "MonthlyIncome"
 ]
 
-# Check that the expected features are available
+# Validate schema alignment between frontend configuration and backend serialization
 if set(feature_columns) != set(
     categorical_features + numeric_features
 ):
@@ -138,7 +139,7 @@ if set(feature_columns) != set(
 # ============================================================
 # 6. COLLECT CUSTOMER INPUTS
 # ============================================================
-
+# Design clean form sections to capture customer features sequentially
 st.header("Customer Information")
 
 customer_input = {}
@@ -152,7 +153,7 @@ with st.form("customer_prediction_form"):
     # --------------------------------------------------------
     # Numerical inputs
     # --------------------------------------------------------
-
+    # Dynamically query bounds from reference dataset to configure slider boundaries
     for index, feature in enumerate(numeric_features):
 
         column = col1 if index % 2 == 0 else col2
@@ -206,7 +207,7 @@ with st.form("customer_prediction_form"):
     # --------------------------------------------------------
     # Categorical inputs
     # --------------------------------------------------------
-
+    # Collect valid distinct labels to present as dropdown selection boxes
     for index, feature in enumerate(categorical_features):
 
         column = col3 if index % 2 == 0 else col4
@@ -232,7 +233,7 @@ with st.form("customer_prediction_form"):
                 feature,
                 options=categories,
                 key=f"input_{feature}"
-            )
+                )
 
     st.divider()
 
@@ -245,12 +246,12 @@ with st.form("customer_prediction_form"):
 # ============================================================
 # 7. GENERATE PREDICTION
 # ============================================================
-
+# Run features inside ML model pipeline once form submit event is triggered
 if submitted:
 
     try:
 
-        # Create input DataFrame in the exact training order
+        # Assemble the dictionary into a single-row DataFrame in the exact original training structure
         input_df = pd.DataFrame(
             [customer_input],
             columns=feature_columns
@@ -263,7 +264,7 @@ if submitted:
             use_container_width=True
         )
 
-        # Predict purchase outcome
+        # Generate target purchase class prediction using our loaded estimator
         prediction = model.predict(input_df)[0]
 
         st.divider()
@@ -277,14 +278,14 @@ if submitted:
                 "the wellness tourism package."
             )
 
-        else:
+        else: 
 
             st.info(
                 "The customer is predicted not to purchase "
                 "the wellness tourism package."
             )
 
-        # Display purchase probability
+        # Query and present positive class prediction likelihood to user interfaces
         if hasattr(model, "predict_proba"):
 
             probabilities = model.predict_proba(input_df)[0]
